@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Cellular Automata - Interactive Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Neural Cellular Automata</h1>
+                <span class="version">v2.0</span>
+            </div>
+            <div class="header-center">
+                <span id="level-name">Level 1: Growth</span>
+            </div>
+            <div class="header-right">
+                <span class="score-label">Score:</span>
+                <span id="score-display">0</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Left Panel: Controls -->
+            <aside class="panel left-panel">
+
+                <!-- Level Info -->
+                <section class="panel-section">
+                    <h3>Level</h3>
+                    <select id="level-select" class="select-input"></select>
+                    <p id="level-desc" class="level-description">Grow your pattern to fill 50% of the grid.</p>
+                </section>
+
+                <!-- Goal Progress -->
+                <section class="panel-section">
+                    <h3>Goal Progress</h3>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="goal-progress">0% / 50%</span>
+                        <span>Steps: <span id="step-count">0</span></span>
+                    </div>
+                </section>
+
+                <!-- Tools -->
+                <section class="panel-section">
+                    <h3>Tools</h3>
+                    <div class="tool-grid">
+                        <button class="tool-btn active" id="btn-draw" data-tool="draw">
+                            <span class="tool-icon">+</span>
+                            <span>Draw</span>
+                        </button>
+                        <button class="tool-btn" id="btn-erase" data-tool="erase">
+                            <span class="tool-icon">-</span>
+                            <span>Erase</span>
+                        </button>
+                        <button class="tool-btn" id="btn-wall" data-tool="wall">
+                            <span class="tool-icon">W</span>
+                            <span>Wall</span>
+                        </button>
+                        <button class="tool-btn" id="btn-repulsor" data-tool="repulsor">
+                            <span class="tool-icon">R</span>
+                            <span>Repulsor</span>
+                        </button>
+                        <button class="tool-btn" id="btn-attractor" data-tool="attractor">
+                            <span class="tool-icon">A</span>
+                            <span>Attractor</span>
+                        </button>
+                        <button class="tool-btn" id="btn-clear-obs" data-tool="clear-obstacles">
+                            <span class="tool-icon">X</span>
+                            <span>Clear Obs</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Brush Size -->
+                <section class="panel-section">
+                    <h3>Brush Size: <span id="brush-value">3</span></h3>
+                    <input type="range" id="brush-size" min="1" max="10" value="3" class="slider">
+                </section>
+
+                <!-- Speed -->
+                <section class="panel-section">
+                    <h3>Speed: <span id="speed-value">5</span></h3>
+                    <input type="range" id="speed" min="1" max="10" value="5" class="slider">
+                </section>
+
+                <!-- Playback -->
+                <section class="panel-section">
+                    <h3>Playback</h3>
+                    <div class="button-row">
+                        <button class="action-btn primary" id="btn-play-pause">
+                            <span id="play-label">Start</span>
+                        </button>
+                        <button class="action-btn" id="btn-step">Step</button>
+                        <button class="action-btn" id="btn-reset">Reset</button>
+                    </div>
+                    <div class="save-load-controls">
+                        <button class="action-btn" id="btn-save">Save</button>
+                        <button class="action-btn" id="btn-load">Load</button>
+                    </div>
+                </section>
+
+                <!-- Pattern Library -->
+                <section class="panel-section" id="pattern-library">
+                    <!-- Populated by pattern-library.js -->
+                </section>
+
+            </aside>
+
+            <!-- Center: Canvas -->
+            <div class="canvas-section">
+
+                <!-- Tutorial Overlay -->
+                <div class="tutorial-panel" id="tutorial-panel">
+                    <div class="tutorial-content">
+                        <h3>Tutorial</h3>
+                        <div id="tutorial-text"></div>
+                        <button class="action-btn primary" id="btn-start-game">Start</button>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="canvas-container">
+                    <canvas id="nca-canvas"></canvas>
+                </div>
+
+                <!-- Canvas Info -->
+                <div class="canvas-info">
+                    <span id="fps-counter">0 FPS</span>
+                    <span id="cell-count">Cells: 0</span>
+                    <span id="coord-display">Position: -</span>
+                </div>
+
+            </div>
+
+            <!-- Right Panel: Explanation and Memory -->
+            <aside class="panel right-panel">
+
+                <!-- Explanation Panel -->
+                <section class="panel-section" id="explanation-panel">
+                    <!-- Populated by explanation-panel.js -->
+                </section>
+
+                <!-- Memory Monitor -->
+                <section class="panel-section" id="memory-panel">
+                    <!-- Populated by memory-monitor.js -->
+                </section>
+
+            </aside>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Based on "Growing Neural Cellular Automata" by Mordvintsev et al., Distill 2020</p>
+            <p>Keyboard: Space=Play/Pause, R=Reset, D=Draw, E=Erase, W=Wall</p>
+        </footer>
+
+    </div>
+
+    <!-- Level Complete Modal -->
+    <div class="modal" id="level-complete-modal" style="display:none;">
+        <div class="modal-content">
+            <h2>Level Complete</h2>
+            <div id="modal-score-breakdown"></div>
+            <button class="action-btn primary" id="btn-next-level">Next Level</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Scripts (order matters for dependencies) -->
+    <script src="nca.js"></script>
+    <script src="obstacle-system.js"></script>
+    <script src="explanation-panel.js"></script>
+    <script src="memory-monitor.js"></script>
+    <script src="game-engine.js"></script>
+    <script src="save-system.js"></script>
+    <script src="pattern-library.js"></script>
+    <script src="controls.js"></script>
+</body>
+
+</html>
